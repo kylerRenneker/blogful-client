@@ -9,12 +9,12 @@ const ArticleContext = React.createContext({
   article: nullArticle,
   comments: [],
   error: null,
-  setError: () => {},
+  setError: () => { },
   clearError: () => { },
-  setArticle: () => {},
-  clearArticle: () => {},
-  setComments: () => {},
-  addComment: () => {},
+  setArticle: () => { },
+  clearArticle: () => { },
+  setComments: () => { },
+  addComment: () => { },
 })
 
 export default ArticleContext
@@ -55,6 +55,7 @@ export class ArticleProvider extends Component {
   }
 
   render() {
+    console.log('this.state.comments: ', this.state.comments)
     const value = {
       article: this.state.article,
       comments: this.state.comments,
