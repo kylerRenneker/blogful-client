@@ -10,6 +10,7 @@ export default class CommentForm extends Component {
   handleSubmit = ev => {
     ev.preventDefault()
     const { article } = this.context
+    console.log('Article: ', article)
     const { text } = ev.target
     ArticleApiService.postComment(article.id, text.value)
       .then(this.context.addComment)

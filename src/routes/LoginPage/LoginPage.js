@@ -6,11 +6,12 @@ export default class LoginPage extends Component {
   static defaultProps = {
     location: {},
     history: {
-      push: () => {},
+      push: () => { },
     },
   }
 
   handleLoginSuccess = () => {
+    console.log(this.props)
     const { location, history } = this.props
     const destination = (location.state || {}).from || '/'
     history.push(destination)
