@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
 export const nullArticle = {
   author: {},
@@ -19,58 +19,60 @@ const ArticleContext = React.createContext({
 
 export default ArticleContext
 
-export class ArticleProvider extends Component {
-  state = {
-    article: nullArticle,
-    error: null,
-  };
+export function ArticleProvider(props) {
+  const [article, setArticle] = useState(nullArticle)
+  const [comments, setComments] = useState([])
+  const [error, setError] = useState({
+    error: null
+  })
 
-  setError = error => {
-    console.error(error)
-    this.setState({ error })
+  const setErrorFn = error => {
+    setError({ error })
   }
 
-  clearError = () => {
-    this.setState({ error: null })
+  const clearError = () => {
+    setError(null)
   }
 
-  setArticle = article => {
-    this.setState({ article })
+  const setArticleFn = article => {
+    setArticle(article)
   }
 
-  setComments = comments => {
-    this.setState({ comments })
+  const setCommentsFn = comments => {
+
+    setComments(comments)
+
   }
 
-  clearArticle = () => {
-    this.setArticle(nullArticle)
-    this.setComments([])
+  const clearArticle = () => {
+    setArticle(nullArticle)
+    setComments([])
   }
 
-  addComment = comment => {
-    this.setComments([
-      ...this.state.comments,
+  const addComment = comment => {
+    setComments([
+      ...comments,
       comment
     ])
   }
 
-  render() {
-    console.log('this.state.comments: ', this.state.comments)
-    const value = {
-      article: this.state.article,
-      comments: this.state.comments,
-      error: this.state.error,
-      setError: this.setError,
-      clearError: this.clearError,
-      setArticle: this.setArticle,
-      setComments: this.setComments,
-      clearArticle: this.clearArticle,
-      addComment: this.addComment,
-    }
-    return (
-      <ArticleContext.Provider value={value}>
-        {this.props.children}
-      </ArticleContext.Provider>
-    )
+
+
+  const value = {
+    article: article,
+    comments: comments,
+    error: error,
+    setError: setErrorFn,
+    clearError: clearError,
+    setArticle: setArticleFn,
+    setComments: setCommentsFn,
+    clearArticle: clearArticle,
+    addComment: addComment,
   }
+  return (
+    <ArticleContext.Provider value={value}>
+      {props.children}
+    </ArticleContext.Provider>
+  )
 }
+

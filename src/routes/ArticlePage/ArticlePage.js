@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ArticleContext, { nullArticle } from '../../contexts/ArticleContext'
 import ArticleApiService from '../../services/article-api-service'
@@ -7,30 +7,38 @@ import StyleIcon from '../../components/StyleIcon/StyleIcon'
 import CommentForm from '../../components/CommentForm/CommentForm'
 import './ArticlePage.css'
 
-export default class ArticlePage extends Component {
-  static defaultProps = {
-    match: { params: {} },
-  }
+export default function ArticlePage(props) {
+  // static defaultProps = {
+  //   match: { params: {} },
+  // }
 
-  static contextType = ArticleContext
 
-  componentDidMount() {
-    const { articleId } = this.props.match.params
-    this.context.clearError()
+  const context = useContext(ArticleContext)
+  // let isRendered = false;
+
+  async function loadData() {
+    const { articleId } = props.match.params
+    context.clearError()
     ArticleApiService.getArticle(articleId)
-      .then(this.context.setArticle)
-      .catch(this.context.setError)
+      .then(context.setArticle)
+      .catch(context.setError)
     ArticleApiService.getArticleComments(articleId)
-      .then(this.context.setComments)
-      .catch(this.context.setError)
+      .then(context.setComments)
+      .catch(context.setError)
   }
 
-  componentWillUnmount() {
-    this.context.clearArticle()
-  }
+  useEffect(() => {
+    loadData()
+    return () => {
+      console.log('clear article ran')
+      context.clearArticle()
+    }
+  }, [])
 
-  renderArticle() {
-    const { article, comments } = this.context
+  console.log('context: ', context)
+
+  const renderArticle = () => {
+    const { article, comments } = context
     return <>
       <h2>{article.title}</h2>
       <p>
@@ -48,25 +56,29 @@ export default class ArticlePage extends Component {
     </>
   }
 
-  render() {
-    const { error, article } = this.context
-    let content
-    if (error) {
-      content = (error.error === `Article doesn't exist`)
-        ? <p className='red'>Article not found</p>
-        : <p className='red'>There was an error</p>
-    } else if (!article.id) {
-      content = <div className='loading' />
-    } else {
-      content = this.renderArticle()
-    }
-    return (
-      <Section className='ArticlePage'>
-        {content}
-      </Section>
-    )
+
+  const { error, article } = context
+  let content
+  if (error) {
+    content = (error.error === `Article doesn't exist`)
+      ? <p className='red'>Article not found</p>
+      : <p className='red'>There was an error</p>
+  } else if (!article.id) {
+    content = <div className='loading' />
+  } else {
+    content = renderArticle()
   }
+
+  return (
+    <Section className='ArticlePage'>
+      {content}
+    </Section>
+  )
+
+
 }
+
+
 
 function ArticleStyle({ article }) {
   return (
