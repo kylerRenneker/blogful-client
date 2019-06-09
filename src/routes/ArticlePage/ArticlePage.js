@@ -14,9 +14,8 @@ export default function ArticlePage(props) {
 
 
   const context = useContext(ArticleContext)
-  // let isRendered = false;
 
-  async function loadData() {
+  useEffect(() => {
     const { articleId } = props.match.params
     context.clearError()
     ArticleApiService.getArticle(articleId)
@@ -25,10 +24,6 @@ export default function ArticlePage(props) {
     ArticleApiService.getArticleComments(articleId)
       .then(context.setComments)
       .catch(context.setError)
-  }
-
-  useEffect(() => {
-    loadData()
     return () => {
       console.log('clear article ran')
       context.clearArticle()
