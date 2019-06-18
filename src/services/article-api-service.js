@@ -51,7 +51,10 @@ const ArticleApiService = {
     })
       .then(res =>
         (!res.ok)
-          ? res.json().then(e => Promise.reject(e))
+          ? res.json().then(e => {
+            console.log(e)
+            Promise.reject(e)
+          })
           : res.json()
       )
   }
